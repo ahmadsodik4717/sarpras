@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "935077015510",
+    "project_id": "smpal-madina",
+    "storage_bucket": "smpal-madina.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935077015510:android:90faf1b78e037488b33e77",
+        "android_client_info": {
+          "package_name": "com.ahmadsodik.sarpras"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAog--aCznILdCJaA5gZmEvwSud6x07qfU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
