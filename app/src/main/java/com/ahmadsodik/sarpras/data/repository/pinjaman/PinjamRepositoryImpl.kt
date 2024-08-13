@@ -11,9 +11,8 @@ class PinjamRepositoryImpl @Inject constructor(
     private val firebaseService: FirebaseService
 ) : PinjamRepository {
 
-    override fun inputPinjaman(namaPeralatan: String, pinjam: Pinjam): LiveData<Result<String>>  = liveData{
+    override fun inputPinjaman(namaPeralatan: String, pinjam: Pinjam): LiveData<Result<String>> = liveData {
         emit(Result.Loading())
-
         try {
             firebaseService.inputPinjaman(namaPeralatan, pinjam)
             emit(Result.Success("Data Berhasil Di Input, Silahkan cek di riwayat"))
