@@ -2,8 +2,15 @@ package com.ahmadsodik.sarpras.data.source.firebase
 
 import com.ahmadsodik.sarpras.data.source.model.Barang
 import com.ahmadsodik.sarpras.data.source.model.Pinjam
+import com.google.firebase.auth.FirebaseUser
 
 interface FirebaseService {
+
+    suspend fun login(email: String, password: String): FirebaseUser?
+
+    suspend fun getCurrentUser(): FirebaseUser?
+
+    suspend fun logout()
 
     suspend fun ambilDataKelas(): List<Barang?>
 

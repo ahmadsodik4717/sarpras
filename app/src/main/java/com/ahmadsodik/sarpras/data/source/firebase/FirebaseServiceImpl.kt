@@ -3,6 +3,8 @@ package com.ahmadsodik.sarpras.data.source.firebase
 import android.util.Log
 import com.ahmadsodik.sarpras.data.source.model.Barang
 import com.ahmadsodik.sarpras.data.source.model.Pinjam
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -12,6 +14,21 @@ import javax.inject.Inject
 class FirebaseServiceImpl @Inject constructor() : FirebaseService {
 
     private val firestore = Firebase.firestore
+    private val auth = Firebase.auth
+
+    override suspend fun login(email: String, password: String): FirebaseUser? {
+        return auth.signInWithEmailAndPassword(email, password)
+            .await()
+            .user
+    }
+
+    override suspend fun getCurrentUser(): FirebaseUser? {
+        return auth.currentUser
+    }
+
+    override suspend fun logout() {
+        auth.signOut()
+    }
 
     override suspend fun ambilDataKelas(): List<Barang?> {
         val result = firestore.collection("kelas")

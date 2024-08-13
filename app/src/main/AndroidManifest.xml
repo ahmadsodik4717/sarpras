@@ -18,6 +18,10 @@
         android:theme="@style/Theme.Sarpras"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.login.LoginActivity"
+            android:exported="false"
+            android:label="@string/title_activity_login" />
+        <activity
             android:name=".presentation.detail_history.DetailHistoryActivity"
             android:exported="false" />
         <activity

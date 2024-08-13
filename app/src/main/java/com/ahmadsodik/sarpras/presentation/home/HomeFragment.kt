@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ahmadsodik.sarpras.R
@@ -14,6 +15,7 @@ import com.ahmadsodik.sarpras.data.source.model.Barang
 import com.ahmadsodik.sarpras.databinding.FragmentHomeBinding
 import com.ahmadsodik.sarpras.presentation.adapter.BarangAdapter
 import com.ahmadsodik.sarpras.presentation.form_pinjam.FormPinjamActivity
+import com.ahmadsodik.sarpras.presentation.login.LoginActivity
 import com.ahmadsodik.sarpras.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,6 +37,28 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpBarangKelas()
         setUpBarangLaboratorium()
+
+        binding?.header?.btnLogout?.setOnClickListener {
+            val alertDialog = AlertDialog.Builder(requireActivity())
+                .setTitle("Logout Aplikasi")
+                .setMessage("Apakah anda yakin ingin keluar?")
+                .setNegativeButton("Tidak") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setPositiveButton("Ya") { _, _ ->
+                    viewModel.logout()
+                    moveToLogin()
+                }
+                .create()
+
+            alertDialog.show()
+        }
+    }
+
+    private fun moveToLogin() {
+        val intent = Intent(requireActivity(), LoginActivity::class.java)
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun setUpBarangKelas() {
