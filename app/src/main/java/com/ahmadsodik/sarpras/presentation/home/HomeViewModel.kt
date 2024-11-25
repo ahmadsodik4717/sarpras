@@ -14,12 +14,9 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val barangRepository: BarangRepository
 ): ViewModel() {
-    fun getDataKelas() : LiveData<Result<List<Barang?>>> {
-        return barangRepository.ambilDataBarangKelas()
-    }
-    fun getDataLaboratorium() : LiveData<Result<List<Barang?>>> {
-        return barangRepository.ambilDataBarangLaboratorium()
-    }
+    val getDataKelas : LiveData<Result<List<Barang?>>> = barangRepository.ambilDataBarangKelas()
+
+    val getDataLaboratorium : LiveData<Result<List<Barang?>>> = barangRepository.ambilDataBarangLaboratorium()
 
     fun logout() = viewModelScope.launch {
         barangRepository.logout()

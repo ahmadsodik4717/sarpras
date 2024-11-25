@@ -14,7 +14,6 @@ import com.ahmadsodik.sarpras.data.source.model.Barang
 import com.ahmadsodik.sarpras.data.source.model.Pinjam
 import com.ahmadsodik.sarpras.databinding.ActivityFormPinjamBinding
 import com.ahmadsodik.sarpras.presentation.MainActivity
-import com.ahmadsodik.sarpras.presentation.history.HistoryFragment
 import com.ahmadsodik.sarpras.util.Result
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
@@ -27,8 +26,11 @@ import java.util.Locale
 class FormPinjamActivity : AppCompatActivity(), DatePickerFragment.DialogDateListener {
 
     private lateinit var binding: ActivityFormPinjamBinding
-
     private val viewModel: PinjamViewModel by viewModels()
+
+    private fun isValidPhoneNumber(phone: String): Boolean {
+        return phone.length >= 10 && phone.length <= 13 && phone.all { it.isDigit() }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,8 +66,17 @@ class FormPinjamActivity : AppCompatActivity(), DatePickerFragment.DialogDateLis
             }
 
             btnInput.setOnClickListener {
-                if (edtNama.text.isNullOrBlank() || edtKeperluan.text.isNullOrBlank() || edtJumlah.text.isNullOrBlank()) {
+                val phoneNumber = edtNomorTelepon.text.toString()
+
+                if (edtNama.text.isNullOrBlank() ||
+                    edtKeperluan.text.isNullOrBlank() ||
+                    edtJumlah.text.isNullOrBlank()) {
                     Snackbar.make(root, "Form wajib diisi", Snackbar.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (!isValidPhoneNumber(phoneNumber)) {
+                    Snackbar.make(root, "Nomor telepon harus 10-13 digit", Snackbar.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
 
@@ -88,30 +99,32 @@ class FormPinjamActivity : AppCompatActivity(), DatePickerFragment.DialogDateLis
                     tanggalPinjam = tanggalPinjam,
                     tanggalKembali = tanggalKembali,
                     keperluan = keperluan,
+                    nomorTelepon = phoneNumber,
                     namaPeralatan = pinjam?.namaPeralatan.toString()
                 )
 
-                viewModel.inputPinjaman(pinjam?.namaPeralatan.toString(), dataPinjam).observe(this@FormPinjamActivity) { result ->
-                    when(result) {
-                        is Result.Error -> {
-                            Toast.makeText(this@FormPinjamActivity, result.message, Toast.LENGTH_SHORT).show()
-                        }
-                        is Result.Loading -> {}
-                        is Result.Success -> {
-                            moveToHome()
+                viewModel.inputPinjaman(pinjam?.namaPeralatan.toString(), dataPinjam)
+                    .observe(this@FormPinjamActivity) { result ->
+                        when(result) {
+                            is Result.Error -> {
+                                Toast.makeText(this@FormPinjamActivity, result.message, Toast.LENGTH_SHORT).show()
+                            }
+                            is Result.Loading -> {}
+                            is Result.Success -> {
+                                Toast.makeText(this@FormPinjamActivity,
+                                    "Peminjaman berhasil! Kami akan menghubungi Anda di $phoneNumber",
+                                    Toast.LENGTH_LONG).show()
+                                moveToHome()
+                            }
                         }
                     }
-                }
             }
         }
     }
 
     override fun onDialogDataSet(tag: String?, year: Int, month: Int, dayOfMonth: Int) {
-
         val calendar = Calendar.getInstance()
-
         calendar.set(year, month, dayOfMonth)
-
         val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
 
         when(tag) {
@@ -135,5 +148,4 @@ class FormPinjamActivity : AppCompatActivity(), DatePickerFragment.DialogDateLis
         private const val DATE_PICKER_PINJAM = "tanggal_pinjam"
         private const val DATE_PICKER_KEMBALI = "tanggal_kembali"
     }
-
 }

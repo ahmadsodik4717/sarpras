@@ -1,7 +1,6 @@
 package com.ahmadsodik.sarpras.presentation.adapter
 
 import android.annotation.SuppressLint
-import android.content.ClipData.Item
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -35,6 +34,7 @@ class HistoryAdapter(
                 tvKeperluan.text = "Keperluan: ${item.keperluan}"
                 tvNamaBarang.text = item.nama
                 tvJumlahBarang.text = "Jumlah: ${item.jumlahPinjamBarang}"
+                // Added phone number display
 
                 itemView.setOnClickListener {
                     onItemClick(item)

@@ -20,7 +20,14 @@ class SedangDipinjamFragment : Fragment() {
     private val viewModel by viewModels<SedangDipinjamViewModel>()
     private var _binding: FragmentSedangDipinjamBinding? = null
     private val binding get() = _binding
-    private lateinit var historyAdapter: HistoryAdapter
+
+    private val historyAdapter by lazy {
+        HistoryAdapter { item ->
+            startActivity(Intent(requireActivity(), DetailHistoryActivity::class.java).apply {
+                putExtra(DetailHistoryActivity.EXTRA_PINJAM, item)
+            })
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,26 +40,27 @@ class SedangDipinjamFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        historyAdapter = HistoryAdapter(
-            onItemClick = {
-                val intent = Intent(requireActivity(), DetailHistoryActivity::class.java).apply {
-                    putExtra(DetailHistoryActivity.EXTRA_PINJAM, it)
-                }
-                startActivity(intent)
-            }
-        )
+        setupRecyclerView()
+        observeData()
+    }
+
+    private fun setupRecyclerView() {
         binding?.rvHistory?.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             adapter = historyAdapter
         }
+    }
 
+    private fun observeData() {
         viewModel.ambilRiwayatSedangDipinjam().observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Result.Error -> {}
-                is Result.Loading -> {}
-                is Result.Success -> {
-                    historyAdapter.submitList(result.data)
+                is Result.Success -> historyAdapter.submitList(result.data)
+                is Result.Error -> {
+                    // Handle error state
+                }
+                is Result.Loading -> {
+                    // Handle loading state
                 }
             }
         }
@@ -60,15 +68,7 @@ class SedangDipinjamFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.ambilRiwayatSedangDipinjam().observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Error -> {}
-                is Result.Loading -> {}
-                is Result.Success -> {
-                    historyAdapter.submitList(result.data)
-                }
-            }
-        }
+        viewModel.ambilRiwayatSedangDipinjam()
     }
 
     override fun onDestroyView() {

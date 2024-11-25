@@ -74,7 +74,7 @@ class HomeFragment : Fragment() {
             setHasFixedSize(true)
             adapter = barangAdapter
         }
-        viewModel.getDataKelas().observe(viewLifecycleOwner) { result ->
+        viewModel.getDataKelas.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Error -> {
                     result.message
@@ -104,7 +104,7 @@ class HomeFragment : Fragment() {
             setHasFixedSize(true)
             adapter = barangAdapter
         }
-        viewModel.getDataLaboratorium().observe(viewLifecycleOwner) { result ->
+        viewModel.getDataLaboratorium.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Error -> {
                     result.message

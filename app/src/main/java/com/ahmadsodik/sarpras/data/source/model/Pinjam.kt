@@ -15,6 +15,7 @@ data class Pinjam(
     val tanggalPinjam: String? = null,
     val tanggalKembali: String? = null,
     val keperluan: String? = null,
+    val nomorTelepon: String? = null,
     val status: String = "sedang dipinjam",
     val namaPeralatan: String = "",
 ) : Parcelable

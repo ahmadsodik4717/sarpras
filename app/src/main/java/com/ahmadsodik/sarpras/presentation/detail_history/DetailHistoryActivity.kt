@@ -1,6 +1,7 @@
 package com.ahmadsodik.sarpras.presentation.detail_history
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -13,7 +14,6 @@ import androidx.core.view.isVisible
 import com.ahmadsodik.sarpras.R
 import com.ahmadsodik.sarpras.data.source.model.Pinjam
 import com.ahmadsodik.sarpras.databinding.ActivityDetailHistoryBinding
-import com.ahmadsodik.sarpras.presentation.MainActivity
 import com.ahmadsodik.sarpras.util.Result
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +25,30 @@ class DetailHistoryActivity : AppCompatActivity() {
         ActivityDetailHistoryBinding.inflate(layoutInflater)
     }
     private val viewModel by viewModels<DetailHistoryViewModel>()
+
+
+    private fun openWhatsApp(pinjam: Pinjam) {
+        val message = """
+        Halo ${pinjam.namaPeminjam},
+        
+        Detail Peminjaman:
+        Nama Barang: ${pinjam.nama}
+        Jumlah: ${pinjam.jumlahPinjamBarang}
+        Tanggal Pinjam: ${pinjam.tanggalPinjam}
+        Tanggal Kembali: ${pinjam.tanggalKembali}
+        Keperluan: ${pinjam.keperluan}
+        
+        Mohon untuk mengembalikan tepat waktu sesuai tanggal yang telah ditentukan.
+        
+        Terima kasih.
+    """.trimIndent()
+
+        val intent = Intent(Intent.ACTION_VIEW)
+        val encodedMessage = Uri.encode(message)
+        val url = "https://api.whatsapp.com/send?phone=62${pinjam.nomorTelepon?.substring(1)}&text=$encodedMessage"
+        intent.data = Uri.parse(url)
+        startActivity(intent)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +72,13 @@ class DetailHistoryActivity : AppCompatActivity() {
             tvNamaPeminjam.text = pinjam?.namaPeminjam
             tvTanggalPinjam.text = pinjam?.tanggalPinjam
             tvTanggalKembali.text = pinjam?.tanggalKembali
+            tvNomorTelepon.text = pinjam?.nomorTelepon
+
+            btnWhatsapp.setOnClickListener {
+                pinjam?.let { data ->
+                    openWhatsApp(data)
+                }
+            }
 
             btnSelesai.isVisible = pinjam?.status == "sedang dipinjam"
             btnSelesai.setOnClickListener {

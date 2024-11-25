@@ -7,13 +7,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ahmadsodik.sarpras.data.source.model.Barang
 import com.ahmadsodik.sarpras.databinding.CardLaboratoriumBinding
+import com.ahmadsodik.sarpras.databinding.ContohBinding
 import com.bumptech.glide.Glide
 
 class BarangAdapter(
     private val onItemClicked: (data: Barang) -> Unit
 ): ListAdapter<Barang, BarangAdapter.BarangViewHolder>(DIFF_CALLBACK) {
 
-    inner class BarangViewHolder(private val binding: CardLaboratoriumBinding) :
+    inner class BarangViewHolder(private val binding: ContohBinding) :
     RecyclerView.ViewHolder(binding.root){
         fun bind(data: Barang) {
             binding.apply {
@@ -32,7 +33,7 @@ class BarangAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BarangViewHolder {
-        val binding = CardLaboratoriumBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ContohBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return BarangViewHolder(binding)
     }
 

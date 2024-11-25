@@ -21,6 +21,14 @@ class SelesaiFragment : Fragment() {
     private var _binding: FragmentSelesaiBinding? = null
     private val binding get() = _binding
 
+    private val historyAdapter by lazy {
+        HistoryAdapter { item ->
+            startActivity(Intent(requireActivity(), DetailHistoryActivity::class.java).apply {
+                putExtra(DetailHistoryActivity.EXTRA_PINJAM, item)
+            })
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,29 +40,35 @@ class SelesaiFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val historyAdapter = HistoryAdapter(
-            onItemClick = {
-                val intent = Intent(requireActivity(), DetailHistoryActivity::class.java).apply {
-                    putExtra(DetailHistoryActivity.EXTRA_PINJAM, it)
-                }
-                startActivity(intent)
-            }
-        )
+        setupRecyclerView()
+        observeData()
+    }
+
+    private fun setupRecyclerView() {
         binding?.rvHistory?.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             adapter = historyAdapter
         }
+    }
 
+    private fun observeData() {
         viewModel.ambilRiwayatSelesaiDipinjam().observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Result.Error -> {}
-                is Result.Loading -> {}
-                is Result.Success -> {
-                    historyAdapter.submitList(result.data)
+                is Result.Success -> historyAdapter.submitList(result.data)
+                is Result.Error -> {
+                    // Handle error state
+                }
+                is Result.Loading -> {
+                    // Handle loading state
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.ambilRiwayatSelesaiDipinjam()
     }
 
     override fun onDestroyView() {
